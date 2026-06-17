@@ -70,6 +70,26 @@ Vẫn trong VS Code:
 
 → Xong! Đợi ~30 giây, web live tự cập nhật. 🎉
 
+**🌐 Link web live của bạn:** https://milli-bui-account-executive-portfolio.vercel.app
+> Đây là link gửi cho mọi người / để trong CV. Link này cố định, không đổi.
+
+---
+
+## 🎬 THÊM VIDEO NỀN TRANG CHỦ (nếu muốn)
+
+Trang chủ có chỗ để **video chạy nền** phía sau dòng chữ "Account Executive".
+Hiện đang để **nền đen** (vẫn đẹp). Muốn thêm video thì làm vầy:
+
+1. Chuẩn bị 1 video ngắn (chạy lặp, không cần tiếng — web tự tắt tiếng)
+2. **Đổi tên** file video thành đúng: **`background_video_layer.mp4`**
+3. **Copy** file đó vào **thư mục gốc** của dự án (cùng chỗ với file `index.html`)
+4. Trong VS Code: **Commit + Push** như Phần 4
+
+→ Web sẽ tự lấy video làm nền (mờ 40%, có phủ tối để chữ trắng vẫn rõ).
+
+> ⚠️ Tên file phải **chính xác** `background_video_layer.mp4` (đuôi `.mp4`), sai một chữ là không hiện.
+> Nếu video bạn có đuôi khác (`.mov`, `.webm`) → đừng đổi đuôi liều, nhắn lại để được chỉnh cho đúng.
+
 ---
 
 ## 🔁 TÓM TẮT MỖI LẦN SỬA (ghi nhớ 4 bước)
