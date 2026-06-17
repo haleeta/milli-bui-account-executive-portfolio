@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milli Bui - Portfolio</title>
+    
+    <!-- Tải Tailwind CSS trực tiếp -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    
+    <!-- Tải thư viện React trực tiếp -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <style>
+        /* Hiệu ứng cuộn chữ và mượt mà khi cuộn trang */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-\[scroll_30s_linear_infinite\] {
+            animation: scroll 30s linear infinite;
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-scroll-left {
+            animation: scroll-left 20s linear infinite;
+        }
+        .animate-scroll-left:hover {
+            animation-play-state: paused;
+        }
+        /* Hide scrollbar but keep scroll functionality */
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <div id="root"><p style="padding:40px;font-size:18px;">Loading...</p></div>
+
+    <script>
+      window.onerror = function(msg, url, line, col, error) {
+        document.getElementById('root').innerHTML = '<pre style="padding:40px;color:red;white-space:pre-wrap;">ERROR: ' + msg + '\nLine: ' + line + '\nCol: ' + col + '\n' + (error ? error.stack : '') + '</pre>';
+        return false;
+      };
+    </script>
+    <script>
+const {
+  useState,
+  useEffect,
+  useRef
+} = React;
+
+// --- BỘ ICON THAY THẾ CHO LUCIDE-REACT ---
+const ArrowUpRight = ({
+  size = 24,
+  className = ""
+}) => /*#__PURE__*/React.createElement("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  className: className
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M7 17L17 7"
+}), /*#__PURE__*/React.createElement("path", {
+  d: "M7 7h10v10"
+}));
+const X = ({
+  size = 24,
+  className = ""
+}) => /*#__PURE__*/React.createElement("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  className: className
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M18 6 6 18"
+}), /*#__PURE__*/React.createElement("path", {
+  d: "m6 6 12 12"
+}));
+const ChevronDown = ({
+  size = 24,
+  className = ""
+}) => /*#__PURE__*/React.createElement("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  className: className
+}, /*#__PURE__*/React.createElement("path", {
+  d: "m6 9 6 6 6-6"
+}));
+const Download = ({
+  size = 24,
+  className = ""
+}) => /*#__PURE__*/React.createElement("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  className: className
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+}), /*#__PURE__*/React.createElement("polyline", {
+  points: "7 10 12 15 17 10"
+}), /*#__PURE__*/React.createElement("line", {
+  x1: "12",
+  x2: "12",
+  y1: "15",
+  y2: "3"
+}));
+const Search = ({
+  size = 24,
+  className = ""
+}) => /*#__PURE__*/React.createElement("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: size,
+  height: size,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  className: className
+}, /*#__PURE__*/React.createElement("circle", {
+  cx: "11",
+  cy: "11",
+  r: "8"
+}), /*#__PURE__*/React.createElement("path", {
+  d: "m21 21-4.3-4.3"
+}));
+
+// --- MOCK DATA (DỮ LIỆU DỰ ÁN) ---
+const projectsData = [{
+  id: 'bia-ha-noi',
+  title: 'HANOI BEER FESTIVAL 2025',
+  subtitle: 'Top [4] BSI Event Ranking Nov. 2025',
+  category: 'IMC & Event Management',
+  intro: "Le hoi Bia Ha Noi - Hanoi Beer Festival is a Vietnamese National Brand-recognized institution, nearly two decades deep in Hanoi's culinary identity - drawing locals and visitors alike. The 2025 edition went beyond activation, staging three experiential brand zones that positioned the festival as a cultural destination at the crossroads of tradition and modernity.",
+  image: './lhb/lhb_cover.jpg',
+  tags: ['IMC Planning', 'Event Execution', 'F&B'],
+  meta: {
+    year: '2025',
+    client: 'Habeco',
+    industry: 'F&B/Marcom',
+    scope: 'IMC planning | Social outreach coordination | Event execution'
+  },
+  rankingsImage: ['./lhb/lhb_bsi_top_4.png', './lhb/lhb_bsi_top_10.png', './lhb/lhb_ynm_top_5.png'],
+  problem: "The festival, though nearly two decades old and a Vietnamese National Brand institution, risked becoming a routine annual event rather than a meaningful cultural moment | Habeco needed the 2025 edition to go beyond standard brand activation - drawing both loyal locals and new visitors in an increasingly competitive F&B entertainment landscape | The challenge was repositioning the festival from a beer promotion to a destination experience that honored tradition while feeling contemporary and compelling",
+  solution: "Brand Zone Strategy: Translated the brief into three distinct experiential brand zones, each designed to immerse attendees at the intersection of Hanoi's culinary tradition and modern culture - giving media and social content a rich, varied story to tell | Social Outreach Coordination: Coordinated influencer and KOL outreach to amplify reach ahead of and during the event, driving pre-event buzz and real-time engagement that extended the festival beyond its physical footprint | On-Ground Execution: Managed event execution logistics end-to-end, serving as the key liaison between client stakeholders, creative teams, and production vendors to deliver the vision on brief, on budget, and on time",
+  strategyImages: ['./lhb/lhb_roadmap.png', './lhb/lhb_roadmap2.png', './lhb/lhb_strategy.png', './lhb/lhb_strategy2.png'],
+  socialImpacts: [{
+    platform: 'Facebook',
+    stats: [{
+      value: '289',
+      label: 'Facebook Posts'
+    }, {
+      value: '325K',
+      label: 'Engagement'
+    }, {
+      value: '3.9M',
+      label: 'Views'
+    }],
+    images: ['./lhb/fbpost_1.png', './lhb/fbpost_2.png', './lhb/fbpost_3.png']
+  }, {
+    platform: 'TikTok & Threads',
+    stats: [{
+      value: '403',
+      label: 'TikTok Posts'
+    }, {
+      value: '98K',
+      label: 'Engagement'
+    }, {
+      value: '1.6M',
+      label: 'Views'
+    }, {
+      value: '50',
+      label: 'Threads Posts'
+    }, {
+      value: '1,499',
+      label: 'Threads Engagement'
+    }, {
+      value: '59K',
+      label: 'Threads Views'
+    }],
+    images: ['./lhb/tiktokpost1.png', './lhb/threadspost2.jpg']
+  }],
+  color: 'bg-yellow-500'
+}, {
+  id: 'hanoi - premium beer',
+  title: 'HANOI PREMIUM HOUSE 2025',
+  subtitle: 'Top [7] BSI Ranking Event Dec. 2025',
+  category: 'IMC & Event Management',
+  intro: "Hanoi Premium House 2025 held in Hanoi and Thanh Hoa marked Habeco's boldest brand elevation yet multi-dimensional urban lifestyle experience, blending premium beer, live music, and immersive bar concepts for a new generation of sophisticated consumers. More than a seasonal activation, the event reaffirmed HABECO's Vietnamese National Brand status.",
+  image: './hnp/hnp_cover.png',
+  tags: ['IMC Planning', 'Event Execution', 'Nightlife'],
+  meta: {
+    year: '2025',
+    client: 'Habeco',
+    industry: 'F&B/Marcom',
+    scope: 'IMC planning | Social outreach coordination | Event execution'
+  },
+  rankingsImage: ['./hnp/hnp_bsi.png', './hnp/hnp_bsi_2.png'],
+  problem: "Multi-City Execution: Hanoi Premium, a relatively new sub-brand under Habeco, needed to simultaneously build brand awareness and claim its positioning as the modern beer for the new generation | First-Time Market Pressure: Executing two live events across Hanoi and Thanh Hoa simultaneously, with Thanh Hoa being a first-time market with no established event blueprint to follow",
+  solution: "Information Flow: Coordinated information flow across content, production, and client-facing functions to ensure updates were consolidated and execution stayed aligned under dual-city pressure | Strategic Rebalancing: Identified early that internal content production capacity would be overstretched - proposed a strategic shift toward fandom-driven media amplification, concentrating platform investment on TikTok and Threads to maximize reach among the young target audience | Data-Driven Decisions: Tracked platform engagement signals and translated them into actionable data to support resource allocation decisions throughout the campaign | Operational Blueprint: Contributed to building an operational checklist for the Thanh Hoa market, laying the groundwork for a reusable blueprint in future first-time market activations",
+  strategyImages: ['./hnp/roadmap_1.png', './hnp/roadmap_2.png', './hnp/roadmap_3.png'],
+  socialImpacts: [{
+    platform: 'TikTok',
+    stats: [{
+      value: '1689',
+      label: 'TikTok Posts'
+    }, {
+      value: '1.5M',
+      label: 'Engagement'
+    }, {
+      value: '14.7M',
+      label: 'Views'
+    }],
+    images: ['./hnp/tiktok_1.png', './hnp/tiktok_2.png']
+  }, {
+    platform: 'Threads',
+    stats: [{
+      value: '404',
+      label: 'Threads Posts'
+    }, {
+      value: '80.8K',
+      label: 'Engagement'
+    }, {
+      value: '1.4M',
+      label: 'Views'
+    }],
+    images: ['./hnp/threads_1.jpg', './hnp/threads_2.jpg', './hnp/threads_3.jpg', './hnp/threads_4.jpg', './hnp/threads_5.jpg']
+  }, {
+    platform: 'Facebook',
+    stats: [{
+      value: '182',
+      label: 'Facebook Posts'
+    }, {
+      value: '86.7K',
+      label: 'Engagement'
+    }],
+    images: ['./hnp/facebook_1.png', './hnp/facebook_2.png', './hnp/facebook_3.png', './hnp/facebook_4.png', './hnp/facebook_5.png']
+  }],
+  color: 'bg-blue-900'
+}, {
+  id: 'Bia-Hoi-Ha-Noi',
+  title: 'BIA HOI HA NOI MOT NET VAN HOA HA NOI',
+  subtitle: 'Cultural Campaign',
+  category: 'Cultural & Seasonal',
+  intro: "This communication campaign for Bia Hoi Ha Noi (a National Brand) was a high-impact event series held across five provinces: Hai Phong, Phu Tho, Hung Yen, Kim Bai, and Nghe An. It aimed to reinforce the brand's national prestige while launching the new PET 1L product and driving massive event attendance.",
+  image: './mnvh/mnvh_cover.png',
+  tags: ['IMC Planning', 'Data-driven Reporting', 'F&B'],
+  meta: {
+    year: '2025',
+    client: 'Habeco',
+    industry: 'F&B',
+    scope: 'IMC Planning | Data-driven Reporting'
+  },
+  problem: "Awareness Gaps: Initial content regarding the new PET 1L product and the National Brand status had not yet achieved optimal penetration across all target segments | Budget Efficiency: The need to maximize coverage and conversion while optimizing the booking budget",
+  solution: "Content Diversification: Leveraged high-engagement content types, specifically artist lineups and minigames, to draw attention toward core brand messages and product features | Site List Optimization: Shifted focus to Top 5 local Facebook pages/groups and Top 3 TikTok news channels per province to eliminate bot engagement and ensure local resonance | Agile Budgeting: Reduced booking volume by 10% once information saturation was reached, saving costs without sacrificing KPIs",
+  strategyImages: ['./mnvh/mnvh_roadmap.png'],
+  socialImpacts: [{
+    platform: 'Facebook Fanpage',
+    stats: [{
+      value: '28',
+      label: 'Fanpage Posts'
+    }, {
+      value: '115%',
+      label: 'KPI Reach'
+    }, {
+      value: '119%',
+      label: 'KPI Engagement'
+    }],
+    images: ['./mnvh/mnvh_fanpage.png', './mnvh/mnvh_fanpage_1.jpg', './mnvh/mnvh_fanpage_2.jpg', './mnvh/mnvh_fanpage_3.jpg', './mnvh/mnvh_fanpage_4.jpg', './mnvh/mnvh_fanpage_6.jpg']
+  }, {
+    platform: 'Facebook Seeding',
+    stats: [{
+      value: '125',
+      label: 'Facebook Posts'
+    }, {
+      value: '300K',
+      label: 'Engagement'
+    }, {
+      value: '7.5M',
+      label: 'Reach'
+    }],
+    images: ['./mnvh/mnvh_facebook.png', './mnvh/mnvh_facebook_1.png', './mnvh/mnvh_facebook_2.png']
+  }, {
+    platform: 'TikTok Seeding',
+    stats: [{
+      value: '75',
+      label: 'TikTok Posts'
+    }, {
+      value: '165K',
+      label: 'Engagement'
+    }, {
+      value: '2.5M',
+      label: 'Views'
+    }],
+    images: ['./mnvh/mnvh_tiktok.png']
+  }],
+  color: 'bg-yellow-600'
+}, {
+  id: 'thuong-hieu-quoc-gia',
+  title: 'BIA HOI HA NOI VANG DANH THUONG HIEU QUOC GIA',
+  category: 'Cultural & Seasonal',
+  intro: "In 2025, Bia Hoi Ha Noi officially received the Vietnam National Brand recognition - marking over a century of quality, culture, and connection with Vietnamese consumers. To celebrate, Habeco launched Bia Hoi Ha Noi KEG 1L: a modern-format product bringing authentic draft beer into a compact, portable size. The campaign executed Phase 2 around the 30/4 – 1/5 holiday, driven by three pillars - FOMO among early adopters, a National Brand limited-edition moment, and a heritage USP rooted in the iconic KEG 50L legacy.",
+  image: './vangdanh/cover_version_2.jpg',
+  tags: ['IMC Planning', 'Project Coordination', 'F&B'],
+  meta: {
+    year: '2025',
+    client: 'Habeco',
+    industry: 'F&B',
+    scope: 'IMC Planning | Project Coordination'
+  },
+  problem: "Identity Tension: Modernizing BHHN for a younger audience risked feeling disconnected from its century-old National Brand heritage, demanding precise tonal calibration across every touchpoint | No Consumer Reference Point: KEG 1L was a completely new format. Consumers had no existing mental model of the product, making the sequencing of FOMO → occasion → USP pillars critical to get right | Compressed Holiday Timeline: Three content pillars had to be briefed, produced, and approved within the 30/4 – 1/5 window, leaving almost zero buffer for delays or misalignments | Scaling a National Occasion: The National Brand hook risked reading as a corporate announcement rather than a genuine cultural moment for the target young audience",
+  solution: "Brief & Scope Management: With three pillars needing to be briefed, produced, and approved within the 30/4 – 1/5 window, maintained tight documentation and milestone tracking to ensure zero slippage across each pillar's production cycle | Pillar Sequencing Support: Recognizing KEG 1L had no existing consumer mental model, supported the team in keeping the FOMO → occasion → USP content sequence intact and coherent across production stages, ensuring each pillar built logically on the last | Content Signal Tracking: Monitored early engagement data to assess whether the National Brand hook was landing as a cultural moment or reading as a corporate message, feeding findings back to the team to sharpen amplification focus toward the most resonant content",
+  contentPackage: [{
+    images: ['./vangdanh/vangdanh_1.png', './vangdanh/vangdanh_2.png', './vangdanh/vangdanh_3.png', './vangdanh/vangdanh_4.png', './vangdanh/vangdanh_5.png', './vangdanh/vangdanh_6.png', './vangdanh/vangdanh_7.png', './vangdanh/vangdanh_8.png', './vangdanh/vangdanh_9.png', './vangdanh/vangdanh_10.png']
+  }],
+  color: 'bg-yellow-500'
+}, {
+  id: 'bia-ha-noi-chao-he',
+  title: 'BIA HOI HA NOI - SUMMER CAMPAIGN',
+  subtitle: 'Seasonal Campaign',
+  category: 'Cultural & Seasonal',
+  intro: "Vibrant summer launch campaign highlighting the refreshing taste and golden color of Bia Hanoi. End-to-end IMC planning to dominate the summer beverage market conversations.",
+  image: './chaohe/cover_ver_2.png',
+  tags: ['IMC Planning', 'F&B'],
+  meta: {
+    year: '2026',
+    client: 'Habeco',
+    industry: 'F&B',
+    scope: 'IMC Planning'
+  },
+  problem: "Brand Consistency: Maintaining brand consistency across thousands of diverse outlets within a tight four-week window creates a risk of fragmented visual identity and diluted impact | Content Fatigue: Relying on static, traditional imagery risks content fatigue, failing to engage younger demographics who seek dynamic and relatable summer experiences",
+  solution: "Synchronized Deployment: Orchestrated a synchronized deployment system with third-party vendors and field teams. This ensured 100% uniformity in urban transformation assets during the crucial week 2 to 4 window, maximizing the brand's street-takeover effect | Sensory Content Transformation: Directed the transformation of traditional brand heritage into high-engagement sensory content. By focusing on Refreshing Transition, the campaign successfully bridged the gap between historical legacy and modern social media trends",
+  strategyImages: ['./chaohe/chaohe_roadmap_1.png', './chaohe/chaohe_roadmap_2.png', './chaohe/chaohe_roadmap_3.png'],
+  socialPresent: [{
+    platform: 'Fanpage',
+    images: ['./chaohe/chaohe_facebook_1.png', './chaohe/chaohe_facebook_2.png', './chaohe/chaohe_facebook_3.png']
+  }],
+  color: 'bg-orange-500'
+}, {
+  id: 'habeco-crisis',
+  title: 'BRAND CRISIS',
+  category: 'Crisis & Brand Protection',
+  intro: "Throughout 2025 and early 2026, HABECO faced a surge in sophisticated fake brand pages on Facebook and TikTok, exploiting the brand's heritage to sell unverified or counterfeit products.",
+  image: './hbccrisis/crisis_cover.jpg',
+  tags: ['Crisis Support', 'Operational Excellence', 'F&B'],
+  meta: {
+    year: '2025',
+    client: 'Habeco',
+    industry: 'F&B/Marcom',
+    scope: 'Crisis Support | Reporting | Internal Comms'
+  },
+  problem: "Trust Erosion: Counterfeiters used high-quality brand assets to create deceptive ads, leading to consumer dissatisfaction and potential health risks from substandard products. | Digital Encroachment: The anonymity of social media allowed fake pages to disappear and reappear quickly, outpacing traditional legal takedown methods.",
+  solution: "Strategic Brand Protection Program: Initiated a Verified Channel campaign, educating consumers on identifying official HABECO seals and digital badges. This moved the brand from a defensive posture to an educational leadership role in the industry. | Cross-Platform Enforcement: Orchestrated a collaborative reporting protocol between HABECO's legal department and social media platform moderators. This streamlined the removal of infringing content and fake storefronts, significantly reducing the 'noise' of counterfeit advertisements during the peak Tet 2026 season.",
+  strategyExxecution: [{
+    seeding: 'News & Media',
+    images: ['./hbccrisis/crisis_1_1.png', './hbccrisis/crisis_1_2.png', './hbccrisis/demo1.png', './hbccrisis/demo2.png']
+  }, {
+    legalReport: 'Platform legal support',
+    images: ['./hbccrisis/baove_1.png', './hbccrisis/baove_2.png', './hbccrisis/baove_3.png']
+  }],
+  color: 'bg-red-600'
+}, {
+  id: 'butuni-launching-campaign',
+  title: 'BUTUNI LAUNCHING CAMPAIGN',
+  category: 'Fashion & Retail',
+  intro: "Comprehensive campaign execution and production tracking for Butuni's Tet 2025 collection. From launching events to sale support assets, ensuring a seamless rollout.",
+  image: './butuni/cover1.png',
+  tags: ['Campaign Execution', 'Fashion', 'Coordination'],
+  meta: {
+    year: '2024-2025',
+    client: 'Butuni',
+    industry: 'Fashion / Retail',
+    scope: 'Campaign Execution | Sale Support | Production'
+  },
+  problem: "Brand messaging lacked cultural resonance: Generic luxury language failed to connect with Vietnamese HNWIs during Tết. | Editorial content was safe and forgettable: Early creative was indistinguishable from mid-tier competitors, undermining premium positioning.| No physical anchor for HNWI outreach:Digital-only activation rarely converts at the luxury tier without an experiential touchpoint.",
+  solution: "Built the Heritage Localization framework fusing Year of the Snake folklore with European tailoring codes, becoming the Rồng Rắn Lên Mây capsule narrative.| Flagged the gap, sourced global luxury benchmarks, and shifted creative direction toward avant-garde visual disruption styling. | Identified Vinhomes Royal Island as the ideal venue and prepared the activation brief - resulting in 500+ qualified HNWIs engaged. | Developed a standalone luxury gifting narrative that repositioned it as a cultural desire object for the Tet season.",
+  strategyImages: ['./butuni/strategy.png'],
+  campaignConcept: [{
+    images: ['./butuni/tet1.jpg', './butuni/tet2.jpg', './butuni/tet3.jpg', './butuni/tet4.jpg', './butuni/tet5.jpg', './butuni/tet6.jpg', './butuni/tet7.jpg', './butuni/tet8.jpg', './butuni/tet9.jpg', './butuni/tet10.jpg']
+  }],
+  color: 'bg-stone-800'
+}, {
+  id: 'butuni-sale-content',
+  title: 'BUTUNI SALE & PRODUCTION',
+  category: 'Fashion & Retail',
+  intro: "Orchestrated the strategic production and performance tracking for Butuni's 'Crafted For Every Step' campaign. Delivered a high-volume, premium content pipeline that ensured consistent brand messaging and measurable ROI across omnichannel touchpoints.",
+  image: './butuni/cover4.png',
+  tags: ['Performance Tracking', 'Production', 'Fashion'],
+  meta: {
+    year: '2025',
+    client: 'Butuni',
+    industry: 'Fashion / Retail',
+    scope: 'Performance Tracking | Production'
+  },
+  rankingsImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop',
+  problem: "Approaching Peak Season, Butuni faced a critical marketing bottleneck: the immediate need for a massive volume of high-converting visual assets. The core challenge was to rapidly scale production across multiple formats to combat ad fatigue, all while fiercely protecting their premium brand equity and sophisticated aesthetic.",
+  solution: "Serving as the central liaison between the Brand and Production teams, I engineered a highly optimized workflow to maximize daily output. By developing comprehensive, platform-specific technical briefs and enforcing rigorous Quality Assurance (QA) protocols, I ensured every bespoke Sales Kit was flawlessly executed and primed for immediate, high-impact deployment.",
+  strategyImages: ['https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2000&auto=format&fit=crop'],
+  measurableImpact: {
+    title: 'MEASURABLE IMPACT',
+    stats: [{
+      value: '300+',
+      label: 'ASSETS DEPLOYED',
+      description: 'Premium visual assets—spanning macro product photography, lifestyle imagery, and short-form video—delivered within an accelerated 2-week timeline.'
+    }, {
+      value: '04',
+      label: 'BESPOKE SALES KITS',
+      description: 'Tailored, platform-native content ecosystems engineered for maximum conversion across Meta Ads.'
+    }]
+  },
+  customerCareSystem: {
+    title: 'Customer Care System',
+    subtitle: 'Optimized after-sales workflow for sales team efficiency',
+    description: 'A comprehensive visual system designed to streamline customer service processes, ensuring consistent brand touchpoints and rapid response capabilities.',
+    images: ['./butuni/baohanh.jpg', './butuni/baohanh1.jpg', './butuni/baohanh_2.jpg', './butuni/customersv_1.jpg', './butuni/customersv_2.jpg', './butuni/customersv_3.jpg']
+  },
+  saleMaterials: {
+    title: 'Sale Content Library',
+    subtitle: 'Curated selection from 300+ produced assets',
+    description: 'High-converting video content and promotional materials developed for multi-platform deployment, demonstrating the scale and quality of production output.',
+    videos: ['./butuni/sale1.mp4', './butuni/sale2.mp4', './butuni/sale3.mp4', './butuni/sale4.mp4', './butuni/sale5.mp4', './butuni/sale6.mp4'],
+    images: ['./butuni/saledep1.jpg', './butuni/bstdep2.jpg', './butuni/bstdep3.jpg', './butuni/bstdep4.jpg', './butuni/bstdep5.jpg']
+  },
+  color: 'bg-neutral-800'
+}];
+const expertiseData = ['IMC planning', 'Event Execution', 'Data-driven Reporting', 'Project Coordination', 'Crisis Support', 'Operational Excellence'];
+
+// --- CUSTOM HOOKS & UTILS ---
+const useIntersectionObserver = options => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsIntersecting(true);
+        if (ref.current) observer.unobserve(ref.current);
+      }
+    }, options);
+    if (ref.current) observer.observe(ref.current);
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, [options]);
+  return [ref, isIntersecting];
+};
+const AnimatedNumber = ({
+  end,
+  suffix = "",
+  duration = 2000,
+  startDelay = 0
+}) => {
+  const [count, setCount] = useState(0);
+  const [ref, isVisible] = useIntersectionObserver({
+    threshold: 0.1
+  });
+  const hasAnimated = useRef(false);
+  useEffect(() => {
+    if (isVisible && !hasAnimated.current) {
+      hasAnimated.current = true;
+      const startAnimation = () => {
+        let startTime = null;
+        const animate = currentTime => {
+          if (!startTime) startTime = currentTime;
+          const progress = Math.min((currentTime - startTime) / duration, 1);
+          const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+          setCount(Math.floor(easeOutQuart * end));
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            setCount(end);
+          }
+        };
+        requestAnimationFrame(animate);
+      };
+      if (startDelay > 0) {
+        setTimeout(startAnimation, startDelay);
+      } else {
+        startAnimation();
+      }
+    }
+  }, [isVisible, end, duration, startDelay]);
+  return /*#__PURE__*/React.createElement("span", {
+    ref: ref
+  }, count, suffix);
+};
+
+// --- COMPONENTS ---
+const FadeIn = ({
+  children,
+  delay = 0,
+  direction = 'up',
+  className = ''
+}) => {
+  const [ref, isVisible] = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+  let baseClass = 'transition-all duration-700 ease-out opacity-0 will-change-transform ';
+  if (direction === 'up') baseClass += 'translate-y-8 ';
+  if (direction === 'down') baseClass += '-translate-y-8 ';
+  if (direction === 'left') baseClass += 'translate-x-8 ';
+  if (direction === 'right') baseClass += '-translate-x-8 ';
+  const visibleClass = isVisible ? '!opacity-100 !translate-y-0 !translate-x-0' : '';
+  return /*#__PURE__*/React.createElement("div", {
+    ref: ref,
+    className: `${baseClass} ${visibleClass} ${className}`,
+    style: {
+      transitionDelay: `${delay}ms`
+    }
+  }, children);
+};
+const Header = ({
+  setView
+}) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      lastScrollY.current = window.scrollY;
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(lastScrollY.current > 20);
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, {
+      passive: true
+    });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  return /*#__PURE__*/React.createElement("header", {
+    className: `fixed top-0 left-0 w-full z-40 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md py-4 shadow-sm border-b border-gray-100' : 'bg-transparent py-6'}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12 flex justify-between items-center text-base font-normal w-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-1/3 text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "cursor-pointer tracking-tight inline-block",
+    onClick: () => {
+      setView('home');
+      window.scrollTo(0, 0);
+    }
+  }, "Milli", /*#__PURE__*/React.createElement("sup", {
+    className: "text-[10px]"
+  }, "®"))), /*#__PURE__*/React.createElement("div", {
+    className: "w-1/3 text-center"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('all-projects');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-gray-500 transition-colors"
+  }, "Projects")), /*#__PURE__*/React.createElement("div", {
+    className: "w-1/3 text-right"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('about');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-gray-500 transition-colors"
+  }, "About"))));
+};
+const ProjectDetailView = ({
+  project,
+  setView,
+  setActiveProject
+}) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [project]);
+
+  // Get diverse next projects - find current index and get next 2 different projects
+  const currentIndex = projectsData.findIndex(p => p.id === project.id);
+  const nextIndices = [(currentIndex + 1) % projectsData.length, (currentIndex + 2) % projectsData.length];
+  const nextProjects = nextIndices.map(i => projectsData[i]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-screen bg-white text-black pt-32 md:pt-48 pb-24 animate-in fade-in duration-700"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h1", {
+    className: "text-[3rem] md:text-[4.5rem] lg:text-[5.5rem] xl:text-[6.5rem] font-bold tracking-tighter leading-[1.1] uppercase mb-4 w-full"
+  }, project.title), project.subtitle && /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl text-gray-500 tracking-tight font-medium uppercase mb-12 md:mb-16"
+  }, project.subtitle)), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 100,
+    className: "mb-24 md:mb-32"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full aspect-[4/3] md:aspect-[21/9] bg-gray-200 overflow-hidden rounded-[2.5rem]"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.image,
+    alt: project.title,
+    className: "w-full h-full object-cover",
+    loading: "eager"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 mb-16 md:mb-20"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200,
+    className: "lg:col-span-7"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-6 text-gray-400"
+  }, "+ Introduction"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl text-gray-800 leading-relaxed font-normal"
+  }, project.intro)), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 300,
+    className: "lg:col-span-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col border-t border-gray-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-6 border-b border-gray-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-500 text-sm md:text-base font-medium"
+  }, "Year"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-sm md:text-base text-right"
+  }, project.meta?.year || '2025')), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-6 border-b border-gray-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-500 text-sm md:text-base font-medium"
+  }, "Client"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-sm md:text-base text-right"
+  }, project.meta?.client || project.title.split(' ')[0])), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-6 border-b border-gray-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-500 text-sm md:text-base font-medium"
+  }, "Industry/sector"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-sm md:text-base text-right"
+  }, project.meta?.industry || project.tags[0])), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between py-6 border-b border-gray-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-500 text-sm md:text-base font-medium"
+  }, "Scope of work"), /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-sm md:text-base text-right max-w-[200px] leading-tight"
+  }, project.meta?.scope || project.tags.join(' | ')))))), project.rankingsImage && project.id !== 'butuni' && project.id !== 'butuni-sale-content' && /*#__PURE__*/React.createElement(FadeIn, {
+    className: "mb-16 md:mb-20 border-t border-gray-200 pt-12"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-6 text-gray-400"
+  }, "+ Market Performance"), /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-gray-50 rounded-[2rem] overflow-hidden p-4 md:p-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-row gap-6 items-stretch justify-center overflow-x-auto pb-2"
+  }, project.id === 'bia-hoi-mot-net-van-hoa' ? /*#__PURE__*/React.createElement(React.Fragment, null, Array.isArray(project.rankingsImage) && project.rankingsImage.map((img, idx) => /*#__PURE__*/React.createElement("img", {
+    key: `rank-${idx}`,
+    src: img,
+    alt: `Rankings ${idx + 1}`,
+    className: "h-48 md:h-64 lg:h-72 w-auto rounded-xl shadow-sm flex-shrink-0",
+    loading: "lazy"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "8M+"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "Total Reach"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-gray-300"
+  }, "(115% of KPI)")), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "95.6K+"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "Social Interactions"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-gray-300"
+  }, "(119% of KPI)")), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "~20K"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "New Followers"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-gray-300"
+  }, "(890% of KPI)")), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "24.1K+"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "Ticket Registrations"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-gray-300"
+  }, "(127% of KPI)")), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "24%"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "Conversion Rate")), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "~6.000"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "Attendance/Event"))) : Array.isArray(project.rankingsImage) ? project.rankingsImage.map((img, idx) => /*#__PURE__*/React.createElement("img", {
+    key: `rank-${idx}`,
+    src: img,
+    alt: `Rankings ${idx + 1}`,
+    className: "h-64 md:h-80 lg:h-96 w-auto rounded-xl shadow-sm mix-blend-multiply flex-shrink-0",
+    loading: "lazy"
+  })) : /*#__PURE__*/React.createElement("img", {
+    src: project.rankingsImage,
+    alt: "Rankings",
+    className: "h-64 md:h-80 lg:h-96 w-auto rounded-xl shadow-sm mix-blend-multiply flex-shrink-0",
+    loading: "lazy"
+  }), project.id === 'bia-ha-noi' && /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[160px] md:min-w-[200px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "~7.000"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "attendees")), project.id === 'bar-hanoi' && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[180px] md:min-w-[220px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0 px-3 text-center"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-sm md:text-base font-bold uppercase tracking-wider leading-tight"
+  }, "YNM RANKING"), /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold my-1"
+  }, "TOP [20]"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "Campaign TET 2025")), /*#__PURE__*/React.createElement("div", {
+    className: "h-36 md:h-44 min-w-[160px] md:min-w-[200px] bg-black rounded-xl flex flex-col items-center justify-center text-white flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl md:text-3xl font-bold"
+  }, "Up to 4000"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs md:text-sm font-medium uppercase tracking-wider"
+  }, "attendees")))))), (project.problem || project.solution) && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-20 border-t border-gray-200 pt-12"
+  }, project.problem && /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-6 text-gray-400"
+  }, "Problem"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-4"
+  }, project.problem.split('|').filter(item => item.trim()).map((item, idx) => {
+    const colonIndex = item.indexOf(':');
+    const title = colonIndex > -1 ? item.slice(0, colonIndex).trim() : item.trim();
+    const content = colonIndex > -1 ? item.slice(colonIndex + 1).trim() : '';
+    return /*#__PURE__*/React.createElement("li", {
+      key: idx,
+      className: "text-lg md:text-xl text-gray-800 leading-relaxed flex gap-3"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-black mt-2"
+    }, "•"), /*#__PURE__*/React.createElement("span", null, colonIndex > -1 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", {
+      className: "font-bold"
+    }, title, ":"), " ", content) : item.trim()));
+  }))), project.solution && /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 100
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-6 text-gray-400"
+  }, "Solution"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-4"
+  }, project.solution.split('|').filter(item => item.trim()).map((item, idx) => {
+    const colonIndex = item.indexOf(':');
+    const title = colonIndex > -1 ? item.slice(0, colonIndex).trim() : item.trim();
+    const content = colonIndex > -1 ? item.slice(colonIndex + 1).trim() : '';
+    return /*#__PURE__*/React.createElement("li", {
+      key: idx,
+      className: "text-lg md:text-xl text-gray-800 leading-relaxed flex gap-3"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-black mt-2"
+    }, "•"), /*#__PURE__*/React.createElement("span", null, colonIndex > -1 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", {
+      className: "font-bold"
+    }, title, ":"), " ", content) : item.trim()));
+  })))), project.measurableImpact && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-16 md:mb-24 text-gray-400"
+  }, project.measurableImpact.title)), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8"
+  }, project.measurableImpact.stats.map((stat, idx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: idx,
+    delay: idx * 150,
+    className: "text-center md:text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-black mb-4"
+  }, stat.value), /*#__PURE__*/React.createElement("div", {
+    className: "text-sm font-bold uppercase tracking-widest text-gray-800 mb-4"
+  }, stat.label), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm md:text-base text-gray-500 leading-relaxed max-w-xs mx-auto md:mx-0"
+  }, stat.description))))), project.customerCareSystem && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-4 text-gray-400"
+  }, project.customerCareSystem.title), /*#__PURE__*/React.createElement("p", {
+    className: "text-xl md:text-2xl font-light text-gray-800 mb-4 max-w-3xl"
+  }, project.customerCareSystem.subtitle), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-gray-500 mb-12 md:mb-16 max-w-2xl"
+  }, project.customerCareSystem.description)), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6"
+  }, project.customerCareSystem.images.map((img, idx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: idx,
+    delay: idx * 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `Customer Care ${idx + 1}`,
+    className: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700",
+    loading: "lazy"
+  })))))), project.saleMaterials && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-4 text-gray-400"
+  }, project.saleMaterials.title), /*#__PURE__*/React.createElement("p", {
+    className: "text-xl md:text-2xl font-light text-gray-800 mb-4 max-w-3xl"
+  }, project.saleMaterials.subtitle), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-gray-500 mb-12 md:mb-16 max-w-2xl"
+  }, project.saleMaterials.description)), project.saleMaterials.videos && project.saleMaterials.videos.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-8"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-medium uppercase tracking-widest text-gray-400 mb-4"
+  }, "TikTok Reels — 9:16 Format")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-5"
+  }, project.saleMaterials.videos.map((video, idx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: idx,
+    delay: idx * 80
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full aspect-[9/16] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("video", {
+    src: video,
+    className: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700",
+    muted: true,
+    loop: true,
+    playsInline: true,
+    preload: "metadata",
+    onMouseEnter: e => e.target.play(),
+    onMouseLeave: e => {
+      e.target.pause();
+      e.target.currentTime = 0;
+    }
+  })))))), project.saleMaterials.images && project.saleMaterials.images.length >= 3 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-8"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-medium uppercase tracking-widest text-gray-400 mb-4"
+  }, "Lifestyle & Lookbook")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 gap-4 md:gap-5"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 250
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.saleMaterials.images[0],
+    alt: "Lifestyle Shot",
+    className: "w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700",
+    loading: "lazy",
+    decoding: "async"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 300
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.saleMaterials.images[1],
+    alt: "Lookbook",
+    className: "w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700",
+    loading: "lazy",
+    decoding: "async"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 350
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.saleMaterials.images[2],
+    alt: "Lifestyle Shot",
+    className: "w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700",
+    loading: "lazy",
+    decoding: "async"
+  }))))), project.saleMaterials.images && project.saleMaterials.images.length >= 5 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-8"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 400
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-medium uppercase tracking-widest text-gray-400 mb-4"
+  }, "Product Details")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 450
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.saleMaterials.images[3],
+    alt: "Shoes Detail",
+    className: "w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700",
+    loading: "lazy",
+    decoding: "async"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 500
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.saleMaterials.images[4],
+    alt: "Wallet",
+    className: "w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700",
+    loading: "lazy",
+    decoding: "async"
+  })))))), project.strategyImages && project.strategyImages.length > 0 && project.id !== 'bia-hoi-mot-net-van-hoa' && project.id !== 'butuni-sale-content' && /*#__PURE__*/React.createElement(FadeIn, {
+    className: "mb-24 md:mb-32 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold uppercase tracking-widest mb-10 text-gray-400"
+  }, "+ Content Strategy & Execution"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+  }, project.strategyImages.map((img, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: `rounded-2xl overflow-hidden shadow-lg bg-gray-50 ${project.strategyImages.length === 1 ? 'md:col-span-2 max-w-5xl mx-auto' : ''} ${project.strategyImages.length === 3 && idx === 0 ? 'md:col-span-2' : ''}`
+  }, img.endsWith('.html') ? /*#__PURE__*/React.createElement("div", {
+    className: "w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[2/1]"
+  }, /*#__PURE__*/React.createElement("iframe", {
+    src: img,
+    title: `Strategy ${idx + 1}`,
+    className: "w-full h-full border-0",
+    scrolling: "auto"
+  })) : /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `Strategy ${idx + 1}`,
+    className: "w-full h-auto max-h-[500px] md:max-h-[600px] lg:max-h-[700px] object-contain hover:scale-[1.02] transition-transform duration-700",
+    loading: "lazy"
+  }))))), project.socialImpacts && project.socialImpacts.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-16 md:mb-24 leading-[1.05]"
+  }, "Social Media", /*#__PURE__*/React.createElement("br", null), "Impact")), project.socialImpacts.map((impact, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "mb-20 md:mb-32"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h4", {
+    className: "text-xl md:text-2xl font-bold uppercase tracking-widest mb-10 text-black border-b-2 border-black inline-block pb-2"
+  }, impact.platform)), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-16"
+  }, impact.stats.map((stat, sIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: sIdx,
+    delay: sIdx * 100,
+    className: "border-l-2 border-gray-300 pl-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-4xl md:text-5xl lg:text-6xl font-bold mb-3 tracking-tight text-black"
+  }, stat.value), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs md:text-sm text-gray-500 uppercase tracking-widest font-medium leading-snug"
+  }, stat.label)))), impact.images && impact.images.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: `grid grid-cols-2 md:grid-cols-${Math.min(impact.images.length, 3)} gap-4 md:gap-6 w-full`
+  }, impact.images.map((img, iIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: iIdx,
+    delay: iIdx * 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-gray-50"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `${impact.platform} Evidence ${iIdx + 1}`,
+    className: "w-full h-full object-contain opacity-90 hover:opacity-100 transition-opacity duration-300",
+    loading: "lazy"
+  })))))))), project.campaignImpacts && project.campaignImpacts.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-16 md:mb-24 leading-[1.05]"
+  }, "Campaign", /*#__PURE__*/React.createElement("br", null), "Impact")), project.campaignImpacts.map((impact, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "mb-20 md:mb-32"
+  }, impact.stats && impact.stats.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-16"
+  }, impact.stats.map((stat, sIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: sIdx,
+    delay: sIdx * 100,
+    className: "border-l-2 border-gray-300 pl-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-4xl md:text-5xl lg:text-6xl font-bold mb-3 tracking-tight text-black"
+  }, stat.value), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs md:text-sm text-gray-500 uppercase tracking-widest font-medium leading-snug"
+  }, stat.label)))), impact.images && impact.images.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 w-full"
+  }, impact.images.map((img, iIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: iIdx,
+    delay: iIdx * 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full rounded-xl overflow-hidden shadow-md flex items-center justify-center bg-gray-50"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `Campaign Evidence ${iIdx + 1}`,
+    className: "w-full h-auto max-h-[500px] object-contain opacity-90 hover:opacity-100 transition-opacity duration-300",
+    loading: "lazy"
+  })))))))), project.campaignConcept && project.campaignConcept.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-16 md:mb-24 leading-[1.05]"
+  }, "Campaign", /*#__PURE__*/React.createElement("br", null), "Concept")), project.campaignConcept.map((concept, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "mb-20 md:mb-32"
+  }, concept.images && concept.images.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-12 gap-x-6 md:gap-x-8 gap-y-16 md:gap-y-28 w-full"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 0,
+    className: "md:col-span-7"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[0],
+    alt: "Concept 1",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700 ease-out",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 150,
+    className: "md:col-span-4 md:col-start-9 flex flex-col gap-5 md:gap-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-4/5 ml-auto rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1 hover:rotate-1"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[1],
+    alt: "Concept 2",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1 hover:-rotate-1"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[2],
+    alt: "Concept 3",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 250,
+    className: "md:col-span-4 md:col-start-1 md:mt-16"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:rotate-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[3],
+    alt: "Concept 4",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 350,
+    className: "md:col-span-3 md:col-start-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-2xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-105"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[4],
+    alt: "Concept 5",
+    className: "w-full h-auto object-cover group-hover:scale-115 transition-transform duration-700",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 450,
+    className: "md:col-span-3 md:col-start-10 md:mt-36"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:-rotate-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[5],
+    alt: "Concept 6",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 550,
+    className: "md:col-span-6 md:col-start-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[6],
+    alt: "Concept 7",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 650,
+    className: "md:col-span-4 md:col-start-9 flex items-end gap-4 md:gap-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-1/2 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:rotate-3"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[7],
+    alt: "Concept 8",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "group w-1/2 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:-rotate-3"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[8],
+    alt: "Concept 9",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 750,
+    className: "md:col-span-10 md:col-start-2 mt-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "group w-full rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: concept.images[9],
+    alt: "Concept 10",
+    className: "w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700",
+    loading: "lazy"
+  }))))))), project.contentPackage && project.contentPackage.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-16 md:mb-24 leading-[1.05]"
+  }, "Content Package")), project.contentPackage.map((pkg, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx
+  }, pkg.images && pkg.images.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: `grid grid-cols-2 md:grid-cols-${Math.min(pkg.images.length, 3)} gap-4 md:gap-6 w-full`
+  }, pkg.images.map((img, iIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: iIdx,
+    delay: iIdx * 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm flex items-center justify-center bg-gray-50"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `Content ${iIdx + 1}`,
+    className: "w-full h-full object-contain opacity-90 hover:opacity-100 transition-opacity duration-300"
+  })))))))), project.socialPresent && project.socialPresent.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, project.socialPresent.map((present, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "mb-20 md:mb-32"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h4", {
+    className: "text-xl md:text-2xl font-bold uppercase tracking-widest mb-10 text-black border-b-2 border-black inline-block pb-2"
+  }, present.platform)), present.images && present.images.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: `grid grid-cols-1 md:grid-cols-${Math.min(present.images.length, 3)} gap-10 md:gap-12 w-full`
+  }, present.images.map((img, iIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: iIdx,
+    delay: iIdx * 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full rounded-xl overflow-hidden shadow-lg flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `${present.platform} ${iIdx + 1}`,
+    className: "w-full h-auto max-h-[800px] object-contain opacity-90 hover:opacity-100 transition-opacity duration-300"
+  })))))))), project.strategyExxecution && project.strategyExxecution.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mb-24 md:mb-40 border-t border-gray-200 pt-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-16 md:mb-24 leading-[1.05]"
+  }, "Strategy Execution")), project.strategyExxecution.map((exec, idx) => /*#__PURE__*/React.createElement("div", {
+    key: idx,
+    className: "mb-16"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h4", {
+    className: "text-xl md:text-2xl font-bold uppercase tracking-widest mb-6 text-black border-b-2 border-black inline-block pb-2"
+  }, exec.seeding || exec.legalReport || 'Execution')), exec.images && exec.images.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-6 md:gap-8 w-full"
+  }, exec.images.map((img, iIdx) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: iIdx,
+    delay: iIdx * 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full rounded-xl overflow-hidden shadow-md flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: img,
+    alt: `Execution ${iIdx + 1}`,
+    className: "w-full h-auto max-h-[600px] object-contain opacity-90 hover:opacity-100 transition-opacity duration-300"
+  })))))))), /*#__PURE__*/React.createElement("div", {
+    className: "pt-24 border-t border-gray-200"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-[5rem] md:text-[8rem] font-bold tracking-tighter leading-[1.05] mb-16"
+  }, "Next projects.")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
+  }, nextProjects.map((p, index) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: p.id,
+    delay: index * 100,
+    className: "group cursor-pointer"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative overflow-hidden rounded-[2.5rem] bg-gray-200 aspect-[4/3] w-full",
+    onClick: () => setActiveProject(p)
+  }, /*#__PURE__*/React.createElement("img", {
+    src: p.image,
+    alt: p.title,
+    className: "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 ease-out flex flex-col justify-end p-6 md:p-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out text-white"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-xl md:text-2xl font-bold tracking-tight leading-tight"
+  }, p.title))))))))));
+};
+const HomeView = ({
+  setView,
+  setActiveProject
+}) => {
+  const [showCVDropdown, setShowCVDropdown] = useState(false);
+  const handleProjectClick = project => {
+    setActiveProject(project);
+    setView('project');
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#f8f8f8] text-black w-full overflow-x-hidden selection:bg-black selection:text-white"
+  }, /*#__PURE__*/React.createElement("section", {
+    className: "relative min-h-screen flex flex-col justify-center pt-32 pb-12 bg-black"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-0 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("video", {
+    src: "./background_video_layer.mp4",
+    autoPlay: true,
+    loop: true,
+    muted: true,
+    playsInline: true,
+    className: "w-full h-full object-cover opacity-40"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 bg-black/60"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12 relative z-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2 mb-6"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl md:text-3xl lg:text-4xl font-normal text-white text-left"
+  }, "Greeting, your")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-[4rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem] xl:text-[12rem] font-bold leading-[0.85] tracking-[-0.04em] text-white text-left"
+  }, "Account", /*#__PURE__*/React.createElement("br", {
+    className: "md:hidden"
+  }), " Executive"))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 150,
+    className: "mt-8 md:mt-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xl md:text-2xl lg:text-3xl font-normal text-white max-w-2xl leading-tight text-left"
+  }, "Turning creative concepts into measurable results."), /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowCVDropdown(!showCVDropdown),
+    className: "flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full text-base font-normal hover:bg-gray-200 transition-all duration-300 whitespace-nowrap"
+  }, "Download CV ", /*#__PURE__*/React.createElement(Download, {
+    size: 20
+  })), showCVDropdown && /*#__PURE__*/React.createElement("div", {
+    className: "absolute top-full mt-4 right-0 w-64 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-visible py-2 z-[9999]"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "px-5 py-2 text-xs font-bold text-gray-400 uppercase tracking-widest"
+  }, "Select Version"), /*#__PURE__*/React.createElement("a", {
+    href: "./(eng)_CV_Account_Executive_BUI_HUYEN_MY_new.pdf",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    onClick: () => setShowCVDropdown(false),
+    className: "flex items-center justify-between px-5 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-black border-t border-gray-50"
+  }, "English (ENG) ", /*#__PURE__*/React.createElement(Download, {
+    size: 14,
+    className: "text-gray-400"
+  })), /*#__PURE__*/React.createElement("a", {
+    href: "./(vie)_CV_Account_Executive_BUI_HUYEN_MY.pdf",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    onClick: () => setShowCVDropdown(false),
+    className: "flex items-center justify-between px-5 py-3 text-sm font-medium hover:bg-gray-50 transition-colors text-black border-t border-gray-50"
+  }, "Vietnamese (VIE) ", /*#__PURE__*/React.createElement(Download, {
+    size: 14,
+    className: "text-gray-400"
+  })))))))), /*#__PURE__*/React.createElement("section", {
+    className: "py-16 md:py-24 bg-white border-b border-gray-100 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 divide-y md:divide-y-0 md:divide-x divide-gray-200"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 100,
+    className: "flex flex-col items-center justify-center text-center px-4 pt-8 md:pt-0"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-3xl md:text-4xl font-medium text-black mb-2"
+  }, /*#__PURE__*/React.createElement(AnimatedNumber, {
+    end: 2,
+    suffix: "+",
+    startDelay: 0,
+    duration: 800
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-500 text-xs uppercase tracking-widest font-normal"
+  }, "year of experience")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200,
+    className: "flex flex-col items-center justify-center text-center px-4 pt-8 md:pt-0"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-3xl md:text-4xl font-medium text-black mb-2"
+  }, /*#__PURE__*/React.createElement(AnimatedNumber, {
+    end: 50,
+    suffix: "+",
+    startDelay: 800
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-500 text-xs uppercase tracking-widest font-normal"
+  }, "hands-on projects")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 300,
+    className: "flex flex-col items-center justify-center text-center px-4 pt-8 md:pt-0"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-lg md:text-xl font-medium text-black mb-2 leading-snug"
+  }, "Multi-domain", /*#__PURE__*/React.createElement("br", null), "specialize in FnB & FMCG"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-500 text-xs uppercase tracking-widest font-normal"
+  }, "and more..."))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 400,
+    className: "max-w-4xl mx-auto text-center mt-16 md:mt-20 pt-12 md:pt-16 border-t border-gray-200"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-medium uppercase tracking-widest text-gray-400 mb-4"
+  }, "Working philosophy"), /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl md:text-2xl lg:text-3xl font-normal leading-[1.2] tracking-tight text-gray-600"
+  }, "\"Calm is power and ", /*#__PURE__*/React.createElement("span", {
+    className: "text-black font-medium"
+  }, "OODA loop"), " is the edge\"")))), /*#__PURE__*/React.createElement("section", {
+    className: "py-32 md:py-48",
+    id: "projects"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 items-center mb-16 md:mb-24 w-full relative"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    className: "text-left hidden md:block z-10"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-400 text-sm tracking-widest uppercase font-medium"
+  }, "Selected")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 100,
+    className: "flex justify-start md:justify-center mb-6 md:mb-0 z-0"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter leading-[1.05] whitespace-nowrap"
+  }, "Projects.")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200,
+    className: "flex justify-start md:justify-end z-10"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('all-projects');
+      window.scrollTo(0, 0);
+    },
+    className: "bg-black text-white px-6 py-3 rounded-full text-sm font-normal hover:bg-gray-800 transition-colors"
+  }, "All projects"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12"
+  }, [projectsData[0], projectsData.find(p => p.id === 'butuni-sale-content')].filter(Boolean).map((project, index) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: project.id,
+    delay: index * 100,
+    className: "group cursor-pointer"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative overflow-hidden rounded-[2.5rem] bg-gray-200 aspect-[4/3] w-full",
+    onClick: () => handleProjectClick(project)
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.image,
+    alt: project.title,
+    className: "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 ease-out flex flex-col justify-end p-8 md:p-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out text-white"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl md:text-3xl font-bold tracking-tight"
+  }, project.title))))))))), /*#__PURE__*/React.createElement("section", {
+    className: "py-24 md:py-40 bg-black text-white rounded-t-[3rem] -mt-10 relative z-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter leading-[1.05] mb-16 md:mb-24 flex items-start gap-4"
+  }, "SCOPE OF WORK. ", /*#__PURE__*/React.createElement("sup", {
+    className: "text-xl md:text-2xl text-gray-500 font-normal mt-6"
+  }, "(", expertiseData.length, ")"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 lg:grid-cols-12 gap-16"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "lg:col-span-5 border-t border-gray-800 pt-10 flex flex-col justify-between"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 100
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl md:text-3xl font-bold mb-4 leading-tight tracking-tight"
+  }, "Account Management & Planning"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-400 text-base md:text-lg leading-relaxed font-normal mb-8"
+  }, "Delivering high-stakes coordination and execution for top-tier brands. From crafting IMC plans to operational excellence during crisis events."), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('about');
+      window.scrollTo(0, 0);
+    },
+    className: "inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full text-base font-medium hover:bg-gray-200 transition-colors w-fit"
+  }, "About ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 18
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "lg:col-span-7 border-t border-gray-800 pt-10"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-gray-500 uppercase tracking-widest mb-6 font-medium"
+  }, "Core Skills"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-3 md:gap-4"
+  }, expertiseData.map((skill, idx) => /*#__PURE__*/React.createElement("span", {
+    key: idx,
+    className: "px-6 py-3 md:py-4 rounded-full border border-gray-700 bg-gray-900/50 hover:bg-white hover:text-black transition-colors cursor-default text-sm md:text-base font-normal"
+  }, skill)))))))), /*#__PURE__*/React.createElement("div", {
+    className: "h-[1px] bg-gray-800 mx-6 md:mx-12"
+  }), /*#__PURE__*/React.createElement("section", {
+    id: "contact",
+    className: "py-24 md:py-40 bg-black relative overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12 relative z-10"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    className: "text-center mb-16 md:mb-24"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-medium uppercase tracking-widest mb-6 text-gray-500"
+  }, "Contact here"), /*#__PURE__*/React.createElement("h2", {
+    className: "text-[2.5rem] md:text-[3.5rem] lg:text-[3rem] font-bold tracking-tighter leading-[1.15] text-white uppercase max-w-5xl mx-auto"
+  }, "If you need someone who can", /*#__PURE__*/React.createElement("br", null), "hold the brief in one hand and", /*#__PURE__*/React.createElement("br", null), "manage the chaos with the other,", /*#__PURE__*/React.createElement("br", null), "let's talk.")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200,
+    className: "flex justify-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-10 md:p-14 rounded-[2.5rem] flex flex-col gap-8 shadow-2xl max-w-md w-full"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-3xl md:text-4xl font-bold text-gray-800 mb-4"
+  }, "Contact"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: "text-gray-700"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+  }))), /*#__PURE__*/React.createElement("a", {
+    href: "tel:+84846222688",
+    className: "text-lg md:text-xl text-gray-700 hover:text-gray-900 transition-colors font-medium"
+  }, "+84 846222688")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: "text-gray-700"
+  }, /*#__PURE__*/React.createElement("rect", {
+    width: "20",
+    height: "16",
+    x: "2",
+    y: "4",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
+  }))), /*#__PURE__*/React.createElement("a", {
+    href: "mailto:mybuiforwork21@gmail.com",
+    className: "text-lg md:text-xl text-gray-700 hover:text-gray-900 transition-colors font-medium break-all"
+  }, "mybuiforwork21@gmail.com")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24",
+    fill: "currentColor",
+    className: "text-gray-700"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+  }))), /*#__PURE__*/React.createElement("a", {
+    href: "https://www.linkedin.com/in/my-bui-account-executive",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "text-lg md:text-xl text-gray-700 hover:text-gray-900 transition-colors font-medium break-all"
+  }, "www.linkedin.com/in/my-bui-account-executive")))))), /*#__PURE__*/React.createElement("footer", {
+    className: "bg-black text-white pt-24 pb-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-gray-800 pt-16 mb-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "col-span-1 md:col-span-2"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-3xl md:text-5xl font-bold mb-4"
+  }, "Milli Bui"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-400 text-lg font-normal"
+  }, "Account Executive")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h4", {
+    className: "text-gray-500 font-medium mb-6 text-sm tracking-widest uppercase"
+  }, "Navigation"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-3 text-lg font-normal"
+  }, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("button", {
+    onClick: () => window.scrollTo(0, 0),
+    className: "hover:text-gray-300"
+  }, "Home ")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('all-projects');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-gray-300"
+  }, "All Projects")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('about');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-gray-300"
+  }, "About"))))))));
+};
+const AllProjectsView = ({
+  setView,
+  setActiveProject
+}) => {
+  const [filter, setFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const categories = ['All', 'IMC & Event Management', 'Cultural & Seasonal', 'Crisis & Brand Protection', 'Fashion & Retail'];
+  const filteredProjects = projectsData.filter(p => {
+    const matchesCategory = filter === 'All' || p.category === filter;
+    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+  const handleProjectClick = project => {
+    setActiveProject(project);
+    setView('project');
+  };
+  const handleCategorySelect = cat => {
+    setFilter(cat);
+    setIsFilterOpen(false);
+    setTimeout(() => {
+      const gridElement = document.getElementById('projects-grid');
+      if (gridElement) {
+        const y = gridElement.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
+      }
+    }, 50);
+  };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#f8f8f8] min-h-screen text-black w-full overflow-x-hidden selection:bg-black selection:text-white pt-32 md:pt-40 pb-24"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h1", {
+    className: "text-[5rem] md:text-[8rem] font-bold tracking-tighter leading-[1.05] mb-6 md:mb-0"
+  }, "Projects."), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-500 mt-4 text-lg max-w-sm font-normal"
+  }, "You can explore more other recent works with selected category.")), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200,
+    className: "relative z-20 w-full md:w-auto flex flex-col md:flex-row gap-4 mt-8 md:mt-0 justify-start md:justify-end items-start md:items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative w-full md:w-64"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    placeholder: "Search",
+    value: searchQuery,
+    onChange: e => setSearchQuery(e.target.value),
+    className: "w-full bg-white pl-12 pr-5 py-3 rounded-full border border-gray-200 text-sm font-normal outline-none focus:border-black transition-colors shadow-sm"
+  }), /*#__PURE__*/React.createElement(Search, {
+    size: 16,
+    className: "absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "relative w-full md:w-auto"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setIsFilterOpen(!isFilterOpen),
+    className: "flex items-center justify-between w-full md:w-auto gap-2 bg-white px-5 py-3 rounded-full border border-gray-200 text-sm font-normal hover:border-black transition-colors shadow-sm min-w-[140px]"
+  }, filter === 'All' ? 'Category' : filter, " ", /*#__PURE__*/React.createElement(ChevronDown, {
+    size: 16,
+    className: `transition-transform ${isFilterOpen ? 'rotate-180' : ''}`
+  })), isFilterOpen && /*#__PURE__*/React.createElement("div", {
+    className: "absolute top-full left-0 md:left-auto md:right-0 mt-2 w-full md:w-56 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden py-2 animate-in fade-in slide-in-from-top-2 z-50"
+  }, categories.map(cat => /*#__PURE__*/React.createElement("button", {
+    key: cat,
+    onClick: () => handleCategorySelect(cat),
+    className: `w-full text-left px-5 py-2 text-sm font-normal hover:bg-gray-50 transition-colors ${filter === cat ? 'font-medium text-black' : ''}`
+  }, cat)))))), /*#__PURE__*/React.createElement("div", {
+    id: "projects-grid",
+    className: "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-32 min-h-[50vh]"
+  }, filteredProjects.length > 0 ? filteredProjects.map((project, index) => /*#__PURE__*/React.createElement(FadeIn, {
+    key: `${project.id}-${filter}-${searchQuery}`,
+    delay: index % 4 * 100,
+    className: "group cursor-pointer"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative overflow-hidden rounded-[2.5rem] bg-gray-200 aspect-[4/3] w-full",
+    onClick: () => handleProjectClick(project)
+  }, /*#__PURE__*/React.createElement("img", {
+    src: project.image,
+    alt: project.title,
+    className: "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-500 ease-out flex flex-col justify-end p-8 md:p-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out text-white"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-4xl md:text-5xl font-bold tracking-tight"
+  }, project.title)))))) : /*#__PURE__*/React.createElement("div", {
+    className: "col-span-1 md:col-span-2 text-center py-20 animate-in fade-in"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xl text-gray-500 font-normal"
+  }, "No projects found."), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      handleCategorySelect('All');
+      setSearchQuery('');
+    },
+    className: "mt-4 text-black font-normal border-b border-black pb-1 hover:text-gray-500 transition-colors"
+  }, "Clear filters")))), /*#__PURE__*/React.createElement("footer", {
+    className: "bg-black text-white pt-16 pb-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 font-normal"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-6 mb-4 md:mb-0"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('home');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-white transition-colors"
+  }, "Home"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('about');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-white transition-colors"
+  }, "About")), /*#__PURE__*/React.createElement("p", null, " 2026 Milli Bui."))));
+};
+const AboutView = ({
+  setView
+}) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#f8f8f8] min-h-screen text-black w-full overflow-x-hidden pt-32 md:pt-48 pb-24"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 mb-24 md:mb-40"
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    className: "lg:col-span-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-gray-200"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "./anhcanhan.jpg",
+    alt: "Milli Bui Portrait",
+    className: "w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+  }))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200,
+    className: "lg:col-span-7 flex flex-col justify-center lg:pl-12 text-right"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-bold uppercase tracking-widest mb-6 md:mb-10 text-gray-400"
+  }, "Why choose me"), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl md:text-3xl lg:text-4xl text-gray-900 leading-snug font-semibold"
+  }, "In 2+ years across marketing and marcom, I've learned that clients don't just need an executor, they need someone who can translate business pressure into creative direction, spot the gap before it becomes a problem, and move fast without losing the bigger picture."))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 mb-24 md:mb-40 border-t border-gray-200 pt-16 md:pt-24"
+  }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-10 md:mb-16 leading-[1.05]"
+  }, "Experience."), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col border-t border-gray-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "py-8 md:py-10 border-b border-gray-200 flex flex-col md:flex-row gap-4 md:gap-8 group"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "md:w-1/3"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-500 font-medium text-sm md:text-base uppercase tracking-widest"
+  }, "2025 - 2026")), /*#__PURE__*/React.createElement("div", {
+    className: "md:w-2/3"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-2xl md:text-3xl font-bold mb-3 group-hover:text-gray-600 transition-colors"
+  }, "5S CONSULTING & MEDIA"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-600 text-lg md:text-xl font-normal"
+  }, "IMC planning and execution agency"))), /*#__PURE__*/React.createElement("div", {
+    className: "py-8 md:py-10 border-b border-gray-200 flex flex-col md:flex-row gap-4 md:gap-8 group"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "md:w-1/3"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-500 font-medium text-sm md:text-base uppercase tracking-widest"
+  }, "2024 - 2025")), /*#__PURE__*/React.createElement("div", {
+    className: "md:w-2/3"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-2xl md:text-3xl font-bold mb-3 group-hover:text-gray-600 transition-colors"
+  }, "BUTUNI"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-600 text-lg md:text-xl font-normal leading-relaxed"
+  }, "Vietnamese Premium Leather Production & Distribution"))))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 200
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-[3rem] md:text-[5rem] font-bold tracking-tighter mb-10 md:mb-16 leading-[1.05]"
+  }, "Education."), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col border-t border-gray-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "py-8 md:py-10 border-b border-gray-200 group"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-2xl md:text-3xl font-bold mb-4 group-hover:text-gray-600 transition-colors"
+  }, "Swinburne University of Technology"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-800 font-medium text-xl md:text-2xl mb-2"
+  }, "Bachelor of Media and Communication"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-500 text-lg font-normal"
+  }, "Major: Advertising"))))), /*#__PURE__*/React.createElement(FadeIn, {
+    delay: 100
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-black text-white rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-16 lg:p-24 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "lg:col-span-7"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-[2.5rem] md:text-[4rem] font-bold tracking-tighter leading-[1.1] mb-12 text-white"
+  }, "Me in 9 to \"five\" is an Account Executive. And me in five to \"fine\" is this person."), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-lg md:text-xl lg:text-2xl text-gray-400 leading-relaxed font-normal"
+  }, "I'm a curious person at heart - genuinely fascinated by how the world is built: technology, language, people, and the invisible threads connecting them all. Right now, that curiosity looks like learning Mandarin and finding real, practical ways to use AI rather than just talking about it. This website you're on? I built it myself. So is the site where I practice Mandarin, and the demos deck for IMC plans - no dev team, just Claude, Gemini, Windsurf, and a lot of vibe-coding energy."))))))), /*#__PURE__*/React.createElement("footer", {
+    className: "bg-[#f8f8f8] text-black pt-24 pb-12 mt-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 font-normal border-t border-gray-200 pt-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-6 mb-4 md:mb-0"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('home');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-black transition-colors"
+  }, "Home"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setView('all-projects');
+      window.scrollTo(0, 0);
+    },
+    className: "hover:text-black transition-colors"
+  }, "Projects")), /*#__PURE__*/React.createElement("p", null, "© 2026 Milli Bui."))));
+};
+const App = () => {
+  const [view, setView] = useState('home');
+  const [activeProject, setActiveProject] = useState(null);
+  const [introVisible, setIntroVisible] = useState(true);
+  const [introFading, setIntroFading] = useState(false);
+  useEffect(() => {
+    const timer1 = setTimeout(() => setIntroFading(true), 1500);
+    const timer2 = setTimeout(() => setIntroVisible(false), 2500);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "font-sans antialiased text-gray-900 bg-white"
+  }, introVisible && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 bg-[#0a0a0a] z-[100] flex items-center justify-center transition-opacity duration-1000 ease-in-out",
+    style: {
+      opacity: introFading ? 0 : 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-white font-normal text-2xl tracking-tighter"
+  }, "Milli", /*#__PURE__*/React.createElement("sup", {
+    className: "text-xs"
+  }, "®"))), /*#__PURE__*/React.createElement(Header, {
+    setView: setView
+  }), /*#__PURE__*/React.createElement("main", null, view === 'home' && /*#__PURE__*/React.createElement(HomeView, {
+    setView: setView,
+    setActiveProject: setActiveProject
+  }), view === 'all-projects' && /*#__PURE__*/React.createElement(AllProjectsView, {
+    setView: setView,
+    setActiveProject: setActiveProject
+  }), view === 'project' && /*#__PURE__*/React.createElement(ProjectDetailView, {
+    project: activeProject,
+    setView: setView,
+    setActiveProject: setActiveProject
+  }), view === 'about' && /*#__PURE__*/React.createElement(AboutView, {
+    setView: setView
+  })));
+};
+
+// Render ứng dụng React vào thẻ div #root
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+    </script>
+</body>
+</html>
+
