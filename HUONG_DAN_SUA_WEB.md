@@ -1,139 +1,110 @@
-# 📘 Hướng dẫn sửa website & đẩy lên GitHub (cho người mới)
+# 📘 Hướng dẫn sửa website (dùng VS Code, không cần gõ lệnh)
 
-Repo của bạn: **https://github.com/haleeta/milli-bui-account-executive-portfolio**
+Web của bạn: **https://github.com/haleeta/milli-bui-account-executive-portfolio**
 
-Hình dung đơn giản như **mượn tài liệu về sửa rồi trả lại**:
-- **Clone / Pull** = tải bản mới nhất về máy
-- **Sửa file** trên máy
-- **Commit** = đóng gói thay đổi + ghi chú "đã sửa gì"
-- **Push** = gửi trả lại lên GitHub
+Quy trình gói gọn trong 4 nhịp:
+1. **Lấy code về** (làm 1 lần)
+2. **Pull** = tải bản mới nhất trước khi sửa
+3. **Sửa file** trong VS Code
+4. **Commit + Push** = gửi thay đổi lên → web live **tự cập nhật** sau ~30 giây
 
-> Khi đã nối với Vercel, **mỗi lần push xong web live tự cập nhật** sau ~30 giây. Không cần làm gì thêm.
-
----
-
-## 🔧 CHUẨN BỊ (chỉ làm 1 lần trên máy mới)
-
-### 1. Cài Git
-- Mở **Terminal** (bấm `Cmd + Space`, gõ "Terminal", Enter)
-- Gõ: `git --version`
-- Nếu báo chưa có → máy sẽ tự hỏi cài, bấm **Install**. Hoặc tải tại https://git-scm.com
-
-### 2. Khai báo tên & email (để GitHub biết ai sửa)
-```bash
-git config --global user.name "Milli Bui"
-git config --global user.email "mybuiforwork21@gmail.com"
-```
-
-### 3. Cài VS Code (app để sửa code, dễ dùng)
-- Tải tại https://code.visualstudio.com → cài như app bình thường
+> 💡 Mọi thao tác git đều bấm nút ngay trong VS Code, **không cần dùng Terminal**.
 
 ---
 
-## 🟢 BƯỚC 1 — Lấy code về máy (làm 1 lần)
+## 🟢 PHẦN 1 — Lấy code về máy (chỉ làm 1 lần đầu)
 
-Mở Terminal, gõ từng dòng (Enter sau mỗi dòng):
+1. Mở **VS Code**
+2. Bấm `Cmd + Shift + P` → gõ **"Git Clone"** → Enter
+3. Dán link này vào:
+   ```
+   https://github.com/haleeta/milli-bui-account-executive-portfolio.git
+   ```
+4. Chọn nơi lưu (ví dụ thư mục **Downloads**)
+5. Khi hỏi "Open the cloned repository?" → bấm **Open**
 
-```bash
-cd ~/Downloads
-git clone https://github.com/haleeta/milli-bui-account-executive-portfolio.git
-cd milli-bui-account-executive-portfolio
-```
+→ Code đã về máy, mở sẵn trong VS Code. Xong!
 
-→ Code được tải về thư mục `~/Downloads/milli-bui-account-executive-portfolio`
-
-> Lần đầu push/clone, GitHub có thể hỏi đăng nhập. Làm theo hướng dẫn ở **phần ⚠️ cuối file**.
-
----
-
-## 🟡 BƯỚC 2 — Sửa code
-
-### a) Luôn tải bản mới nhất về TRƯỚC khi sửa
-```bash
-cd ~/Downloads/milli-bui-account-executive-portfolio
-git pull
-```
-
-### b) Mở thư mục bằng VS Code
-```bash
-code .
-```
-(dấu chấm nghĩa là "mở thư mục hiện tại")
-
-### c) Sửa nội dung
-- File chính là **`index.html`**
-- Nội dung các dự án (tên, mô tả, số liệu...) nằm trong phần `projectsData` ở gần đầu file
-- Sửa xong nhớ **bấm `Cmd + S`** để lưu
-
-> ⚠️ Lưu ý: code trang đã được "dịch sẵn" (kiểu `React.createElement`), hơi khó đọc.
-> Nếu cần sửa nhiều/phức tạp → nhắn lại để được hỗ trợ, đừng sửa liều kẻo lỗi.
-> Còn chỉ đổi **chữ, số, tên** thì cứ tìm đúng đoạn text và thay là được.
-
-### d) Xem thử trước khi đẩy lên
-- Bấm đúp vào file `index.html` để mở bằng trình duyệt, kiểm tra ổn chưa
+> Lần đầu có thể bị hỏi đăng nhập GitHub → xem **PHẦN 5** ở cuối.
 
 ---
 
-## 🟢 BƯỚC 3 — Đẩy thay đổi lên GitHub
+## 🟡 PHẦN 2 — Trước khi sửa: bấm PULL (tải bản mới nhất)
 
-Trong Terminal (vẫn ở trong thư mục dự án), gõ 3 dòng:
+Mỗi lần ngồi vào sửa, **luôn pull trước** để chắc chắn bạn đang sửa trên bản mới nhất:
 
-```bash
-git add -A
-git commit -m "Mô tả ngắn việc vừa sửa, vd: cap nhat so lieu du an Habeco"
-git push
-```
+- Nhìn **góc dưới cùng bên trái** VS Code → có biểu tượng **🔄 (vòng tròn xoay)** cạnh tên nhánh `main`
+- **Bấm vào biểu tượng 🔄 đó** → VS Code tự tải bản mới về
 
-Xong! Đợi ~30 giây, web live trên Vercel sẽ tự cập nhật. 🎉
+Vậy là xong bước pull.
 
 ---
 
-## 📋 BẢNG LỆNH BỎ TÚI (copy dùng mỗi lần)
+## 🟡 PHẦN 3 — Sửa nội dung
 
-```bash
-# Vào thư mục dự án
-cd ~/Downloads/milli-bui-account-executive-portfolio
+- File chính cần sửa: **`index.html`**
+- Nội dung các dự án (tên, mô tả, số liệu...) nằm ở phần **`projectsData`** gần đầu file
+  - Mẹo: bấm `Cmd + F` để **tìm** đúng chữ muốn sửa cho nhanh
+- Sửa xong nhớ bấm **`Cmd + S`** để lưu
 
-# 1. Tải bản mới nhất
-git pull
+> ⚠️ **Quan trọng:** code trang đã được "dịch sẵn" (kiểu `React.createElement`), hơi khó đọc.
+> - ✅ Chỉ nên đổi **chữ, số, tên, đường link** trong dấu ngoặc kép `" "`
+> - ❌ Đừng xóa/đổi các dấu `(`, `)`, `{`, `}`, `,` — sai một dấu là web trắng trang
+> - Cần sửa nhiều/phức tạp → nhắn lại để được hỗ trợ, đừng sửa liều
 
-# 2. (sửa file index.html, lưu Cmd+S)
-
-# 3. Đẩy lên
-git add -A
-git commit -m "ghi chu viec vua sua"
-git push
-```
+### Xem thử trước khi đẩy lên
+- Bấm đúp vào file `index.html` ngoài Finder để mở bằng trình duyệt, kiểm tra ổn chưa
 
 ---
 
-## ⚠️ ĐĂNG NHẬP GITHUB (lần đầu push thường bị hỏi)
+## 🟢 PHẦN 4 — Đẩy lên (Commit + Push)
 
-GitHub **không cho dùng mật khẩu thường** khi push. Cần "chìa khóa" gọi là **Personal Access Token**:
+Vẫn trong VS Code:
 
+1. Bấm vào biểu tượng **Source Control** ở thanh dọc bên trái (icon hình **nhánh cây 🔀**, hoặc bấm `Cmd + Shift + G`)
+2. Bạn sẽ thấy danh sách file vừa sửa
+3. Ô **"Message"** phía trên → gõ ghi chú ngắn, ví dụ: *"cap nhat so lieu du an Habeco"*
+4. Bấm nút **✓ Commit**
+   - Nếu hỏi "stage all changes?" → bấm **Yes**
+5. Bấm nút **Sync Changes** (hoặc **Push**) hiện ra sau đó
+
+→ Xong! Đợi ~30 giây, web live tự cập nhật. 🎉
+
+---
+
+## 🔁 TÓM TẮT MỖI LẦN SỬA (ghi nhớ 4 bước)
+
+| Bước | Làm gì | Ở đâu |
+|------|--------|-------|
+| 1️⃣ Pull | Bấm 🔄 góc dưới trái | Tải bản mới về |
+| 2️⃣ Sửa | Mở `index.html`, sửa, `Cmd+S` | Soạn thảo |
+| 3️⃣ Commit | Gõ ghi chú + bấm ✓ Commit | Source Control |
+| 4️⃣ Push | Bấm Sync / Push | Gửi lên → web tự update |
+
+---
+
+## ⚠️ PHẦN 5 — Đăng nhập GitHub (lần đầu thường bị hỏi)
+
+Cách dễ nhất: **để VS Code tự lo**.
+- Khi push lần đầu, VS Code hiện popup **"Sign in with GitHub"** → bấm vào, trình duyệt mở ra → bấm **Authorize** → xong, máy tự nhớ.
+
+Nếu nó hỏi username/password kiểu cũ thì cần **token** (không dùng mật khẩu thường):
 1. Vào https://github.com/settings/tokens
-2. Bấm **Generate new token** → chọn **Generate new token (classic)**
-3. Đặt tên bất kỳ (vd "macbook cua toi")
-4. **Expiration:** chọn **No expiration** (hoặc 90 ngày)
-5. Tích vào ô **`repo`** (cho phép sửa kho code)
-6. Kéo xuống bấm **Generate token**
-7. **Copy chuỗi token** hiện ra (chỉ hiện 1 lần, lưu lại chỗ an toàn!)
-
-→ Khi Terminal hỏi:
-- **Username:** gõ tên GitHub của bạn (vd `haleeta`)
-- **Password:** **dán cái token vừa copy** (KHÔNG phải mật khẩu thường)
-
-> Máy sẽ nhớ token cho các lần sau, không phải nhập lại.
+2. **Generate new token** → **(classic)**
+3. Đặt tên bất kỳ, Expiration chọn **No expiration**
+4. Tích ô **`repo`** → kéo xuống **Generate token**
+5. **Copy** chuỗi token (chỉ hiện 1 lần!)
+6. Khi máy hỏi Password → **dán token** (không phải mật khẩu)
 
 ---
 
 ## 🆘 GẶP LỖI?
 
-| Lỗi | Cách xử lý |
-|-----|-----------|
-| `Authentication failed` | Sai token → tạo lại token (phần ⚠️ trên) |
-| `Updates were rejected` | Có người sửa trước → gõ `git pull` rồi `git push` lại |
-| `not a git repository` | Bạn đang đứng sai thư mục → gõ lại `cd ~/Downloads/milli-bui-account-executive-portfolio` |
-| Web không cập nhật | Đợi 1-2 phút; kiểm tra trên vercel.com xem deploy xong chưa |
+| Tình huống | Cách xử lý |
+|-----------|-----------|
+| Web bị trắng trang sau khi sửa | Có thể lỡ xóa nhầm dấu ngoặc → bấm pull lại bản cũ, hoặc nhắn nhờ hỗ trợ |
+| Push báo "rejected / behind" | Bấm 🔄 (Pull) trước, rồi Push lại |
+| Đăng nhập thất bại | Tạo lại token (Phần 5) |
+| Web không cập nhật | Đợi 1–2 phút; vào vercel.com xem deploy xong chưa |
 
-Kẹt chỗ nào cứ chụp màn hình gửi lại để được hỗ trợ nhé!
+Kẹt chỗ nào cứ chụp màn hình gửi lại nhé!
